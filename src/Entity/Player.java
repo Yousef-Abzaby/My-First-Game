@@ -13,17 +13,23 @@ public class Player extends Entity {
     MyPanel panel;
     KeyHandler keyHandler;
 
+    public final int screenX;
+    public final int screenY;
+
     public Player(MyPanel panel, KeyHandler keyHandler) {
         this.panel = panel;
         this.keyHandler = keyHandler;
+
+        screenX = panel.screenWidth / 2 - (panel.TILE_SIZE / 2);
+        screenY = panel.screenHeight / 2 - (panel.TILE_SIZE / 2);
 
         setDefaultValues();
         getPlayerImage();
     }
 
     public void setDefaultValues() {
-        x = 100;
-        y = 100;
+        worldX = panel.TILE_SIZE * 25;
+        worldY = panel.TILE_SIZE * 25;
         speed = 4;
         direction = "none";
     }
@@ -50,19 +56,19 @@ public class Player extends Entity {
     public void update() {
         if(keyHandler.upPressed) {
             direction = "up";
-            y -= speed;
+            worldY -= speed;
         }
         if(keyHandler.downPressed) {
             direction = "down";
-            y += speed;
+            worldY += speed;
         }
         if(keyHandler.leftPressed) {
             direction = "left";
-            x -= speed;
+            worldX -= speed;
         }
         if(keyHandler.rightPressed) {
             direction = "right";
-            x += speed;
+            worldX += speed;
         }
         if(!keyHandler.rightPressed && !keyHandler.leftPressed && !keyHandler.downPressed && !keyHandler.upPressed) {
             direction = "none";
@@ -119,6 +125,6 @@ public class Player extends Entity {
             case "none":
                 image = standing;
         }
-        g2d.drawImage(image, x, y, panel.TILE_SIZE, panel.TILE_SIZE, null);
+        g2d.drawImage(image, screenX, screenY, panel.TILE_SIZE, panel.TILE_SIZE, null);
     }
 }

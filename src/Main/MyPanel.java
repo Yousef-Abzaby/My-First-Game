@@ -7,6 +7,7 @@ import java.awt.*;
 import javax.swing.JPanel;
 
 public class MyPanel extends JPanel implements Runnable {
+    // Screen Settings
     final int ORIGINAL_TILE_SIZE = 16;
     final int SCALE = 3;
     public int TILE_SIZE = SCALE * ORIGINAL_TILE_SIZE;
@@ -15,13 +16,19 @@ public class MyPanel extends JPanel implements Runnable {
     public final int screenWidth = TILE_SIZE * MAX_SCREEN_COLUMNS;
     public final int screenHeight = TILE_SIZE * MAX_SCREEN_ROWS;
 
+    //World Settings
+    public final int worldCol = 50;
+    public final int worldRow = 50;
+    public final int worldWidth = worldCol * TILE_SIZE;
+    public final int worldHeight = worldRow * TILE_SIZE;
+
     // FPS
     final int FPS = 60;
 
     Thread myThread;
     KeyHandler keyHandler = new KeyHandler();
     TileManager tileManager = new TileManager(this);
-    Player player = new Player(this, keyHandler);
+    public Player player = new Player(this, keyHandler);
 
     MyPanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));

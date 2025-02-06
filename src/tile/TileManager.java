@@ -17,10 +17,10 @@ public class TileManager {
     public TileManager(MyPanel panel) {
         this.panel = panel;
         tiles = new Tile[10];
-        mapTileNum = new int[panel.MAX_SCREEN_ROWS][panel.MAX_SCREEN_COLUMNS];
+        mapTileNum = new int[panel.worldRow][panel.worldCol];
 
         getTileImage();
-        loadMapTiles("Maps/map01.txt");
+        loadMapTiles("Maps/modified_world_map.txt");
     }
 
     public void getTileImage() {
@@ -33,6 +33,15 @@ public class TileManager {
 
             tiles[2] = new Tile();
             tiles[2].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("Tiles/Ski.png"));
+
+            tiles[3] = new Tile();
+            tiles[3].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("Tiles/Tree.png"));
+
+            tiles[4] = new Tile();
+            tiles[4].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("Tiles/Sand.png"));
+
+            tiles[5] = new Tile();
+            tiles[5].image = ImageIO.read(getClass().getClassLoader().getResourceAsStream("Tiles/Earth.png"));
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -46,9 +55,9 @@ public class TileManager {
 
             int col = 0;
             int row = 0;
-            while (col < panel.MAX_SCREEN_COLUMNS && row < panel.MAX_SCREEN_ROWS) {
+            while (col < panel.worldCol && row < panel.worldRow) {
                 String line = reader.readLine(); // to read the lines of the map
-                while (col < panel.MAX_SCREEN_COLUMNS) {
+                while (col < panel.worldCol) {
                     String[] numbers = line.split(" "); // turns the line into an array of string of numbers
                     int x = Integer.parseInt(numbers[col]); // turns the string number into int
                     mapTileNum[row][col] = x; // updates the data of the mapTileNum
@@ -66,23 +75,28 @@ public class TileManager {
     }
 
     public void draw(Graphics2D g2d) {
-        int col = 0;
-        int row = 0;
-        int x = 0;
-        int y = 0;
-        while (col < panel.MAX_SCREEN_COLUMNS && row < panel.MAX_SCREEN_ROWS) {
+        int worldCol = 0;
+        int WorldRow = 0;
+        while (worldCol < panel.worldCol && WorldRow < panel.worldRow) {
 
-            int tileNum = mapTileNum[row][col];
+            int tileNum = mapTileNum[WorldRow][worldCol];
 
-            g2d.drawImage(tiles[tileNum].image, x, y, panel.TILE_SIZE, panel.TILE_SIZE, null);
-            x += panel.TILE_SIZE;
-            col++;
+            int WorldX = worldCol * panel.TILE_SIZE;
+            int WorldY = WorldRow * panel.TILE_SIZE;
+            int ScreenX = WorldX - panel.player.worldX + panel.player.screenX;
+            int ScreenY = WorldY - panel.player.worldY + panel.player.screenY;
 
-            if (col == panel.MAX_SCREEN_COLUMNS) {
-                col = 0;
-                x = 0;
-                row++;
-                y += panel.TILE_SIZE;
+            if(     WorldX + panel.TILE_SIZE > panel.player.worldX - panel.player.screenX &&
+                    WorldX - panel.TILE_SIZE< panel.player.worldX + panel.player.screenX &&
+                    WorldY + panel.TILE_SIZE> panel.player.worldY - panel.player.screenY &&
+                    WorldY - panel.TILE_SIZE< panel.player.worldY + panel.player.screenY) {
+                g2d.drawImage(tiles[tileNum].image, ScreenX, ScreenY, panel.TILE_SIZE, panel.TILE_SIZE, null);
+            }
+            worldCol++;
+
+            if (worldCol == panel.worldCol) {
+                worldCol = 0;
+                WorldRow++;
             }
         }
     }
